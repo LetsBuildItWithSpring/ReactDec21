@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import uid2 from 'uid2';
 
 function xyz(state=0, action){
@@ -15,16 +15,18 @@ function xyz(state=0, action){
 
 function tweetsReducer(state = [], action) {
     console.log(action, "From TWEETS REDUCER")
-    if(action.type === 'ADD_TWEET'){
+    const {type, data}  = action;
+
+    if(type === 'ADD_TWEET'){
         const tweet = {
             id: uid2(5),
-            ...action.data,
+            ...data,
         }
         state = [tweet, ...state];
     }
-    if(action.type === 'REMOVE_TWEET'){
+    if(type === 'REMOVE_TWEET'){
         state = state.filter((tweet) => {
-            return tweet.id != action.data
+            return tweet.id != data
         })
     }
     return state;
@@ -43,7 +45,31 @@ const rootReducer =  combineReducers({
     categories: categoryReducer,
 });
 
-const store = createStore(rootReducer);
+const customMiddleware = (store) => {
+    return (next) => {
+        return (action) => {
+                console.log("Hi From middleware", action);
+                if(typeof action === 'function'){
+                    action(store);
+                } else {
+                    next(action);
+                }
+        }
+    }
+}
+
+
+const store = createStore(rootReducer, applyMiddleware(
+       ...[ customMiddleware,
+        (state) => (next) => (action) => {
+            console.log("Hi from 2nd middleware", action);
+            next(action)
+        },
+        (state) => (next) => (action) => {
+            console.log("Hi from 3nd middleware", action);
+            next(action);
+        },]
+    ));
 
 export default store;
 

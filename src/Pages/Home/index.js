@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useDispatch } from 'react-redux';
 
-import { useData } from './../../hook'
+import { useData, useDataPro } from './../../hook'
 import Tick from '../../widgets/tick';
 
 const myUseSelector = (abc) => {
@@ -24,27 +24,18 @@ const myUseSelector = (abc) => {
 
 const Home = (props) => {
     const dispatch = useDispatch();
-   const directors =  myUseSelector((data) => {
-        console.log("From MyuseSelector", data);
-        return data.directors;
-    });
-   const movies =  myUseSelector((data) => {
-        console.log("From MyuseSelector", data);
-        return data.movies;
-    });
-   const artists =  myUseSelector((data) => {
-        console.log("From MyuseSelector", data);
-        return data.artists;
-    });
-    console.log("*********");
-    console.log(directors, movies, artists);
+   
 
     // const tweetsData = useSelector((state) => state.tweets);
     // const cats = useSelector(state => state.categories);
 
-  const [tweetsData = [], , cats = []] = [];
-  console.log(   useData(['tweets', 'balance', 'categories']));
+    // const tweetsData = useData('tweets');    
+    // const cats = useData('categories');   
+    const {tweets: tweetsData, categories: cats} =  useDataPro(['tweets', 'categories', 'balance']);
 
+    // const tweetsData = data.tweets;
+    // const cats = data.categories;
+    console.log("useDataPro", );
     const [tweets, setTweets] = useState([]);
     // const [cats = [],] = useState();
     const [tickedCats, setTickedCats] = useState([]);
@@ -57,6 +48,7 @@ const Home = (props) => {
     useEffect(() => {
         console.log("-> only for ticked cats");
     }, [tickedCats,]);
+    
     useEffect(() => {
         console.log("-> only for cats");
     }, [cats,]);
@@ -111,7 +103,14 @@ const Home = (props) => {
         {
             
                 <ul>
-                    {tweets.map((tweet, index) => <li key={index}>{tweet.description} {getRemoveButton(tweet.id)} </li>)}
+                    {tweets.map((tweet, index) => <li key={index}> 
+                    {tweet.description}
+                        <br/>
+                            { tweet.images.map((img, index) => <img width="80" key={index} src={img}/>) }
+                        <br/>
+                    
+                    {getRemoveButton(tweet.id)}
+                    </li>)}
                 </ul>
         }
     </main>

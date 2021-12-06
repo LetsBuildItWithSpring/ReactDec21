@@ -1,24 +1,22 @@
 
 import React, { useState, useEffect } from 'react';
-import store from '../../state';
+import { useDispatch } from 'react-redux';
+import { useData } from '../../hook';
 
-console.log(store.getState());
 
 const MyAccount  = () => {
+    const dispatch = useDispatch();
     const [deposit, setDeposit] = useState(0);
-    const [balance, setBalance]= useState(0);
+    const balance = useData('balance');
     useEffect(() => {
-        store.subscribe(() => {
-            const state = store.getState();
-            setBalance(state);
-        });
+        
     }, [])
     const handleDeposit = () => {
         const action = {
             type: "deposit",
             payload: deposit,
         };
-        store.dispatch(action);
+        dispatch(action);
     }
 
     const handleWithdraw = () => {
@@ -27,7 +25,7 @@ const MyAccount  = () => {
             type: "withdraw",
             payload: deposit
         }
-        store.dispatch(action);
+        dispatch(action);
     }
     
     return <main id="my-acccount">
@@ -53,7 +51,7 @@ const MyAccount  = () => {
         </table>
         <br />
         <button onClick={() => {
-            console.log(store.getState());
+            
 
         }}>GET LATEST STATE(BALANCE)</button>
     </main>

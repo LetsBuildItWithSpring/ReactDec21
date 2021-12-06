@@ -1,16 +1,20 @@
 
 import React, { useEffect, useState } from 'react';
+// import { use} from ''
 import store from '../../state';
-
+import * as fx from './../../fx';
+import { readFile } from './../../utils';
 
 const Tweets  = () => {
     const [categories, setCats] = useState(store.getState().categories);
     const [tweet, setTweet] = useState({
         description: '',
         category: '',
+        images: [],
     });
     const [category, setCategory] = useState('');
     const [selectedCat, setSelectedCat] = useState('');
+    const [newFiles, setNewFiles] = useState([]);
 
     const handleDesChange = ({currentTarget: {value}}) => {
         setTweet({
@@ -27,12 +31,17 @@ const Tweets  = () => {
     const createTweet = () => {
         const tempTweet = { ...tweet};
         tempTweet.category = selectedCat;
-
-        const action = {
-            type: 'ADD_TWEET',
-            data: tempTweet,
-        }
-        store.dispatch(action);
+        tempTweet.images = newFiles;
+        // http.createTweet(tempTweet).then((data) => {
+            // const action = {
+            //     type: 'ADD_TWEET',
+            //     data,
+            // }
+        //     store.dispatch(action);
+        // });
+        
+        store.dispatch(fx.newTweet(tempTweet));
+        
     }
 
     const createCategory = () => {
@@ -49,6 +58,27 @@ const Tweets  = () => {
             setCats(globalState.categories);
         });
     }, [])
+
+    const handleFileChange = async (event) => {
+        console.log(event.currentTarget.files);
+        const { currentTarget: {files} } = event; 
+        // const file = files[0];
+        // console.log(file);
+        
+        // const fReader = new FileReader();
+        // fReader.readAsDataURL(file);
+        // fReader.addEventListener('load', (ev) => {
+        //    const { currentTarget: {result} } = ev;
+        //    console.log("Result of file upload")
+        //    console.log(result);
+        //    setNewFile(result);
+        // });
+        const fileArray = Array.from(files);
+        const promises$ = fileArray.map(readFile);
+        const uplodedImages = await Promise.all(promises$);
+        setNewFiles(uplodedImages);
+    }
+
     return <main id="tweets">
         <h1>Tweets</h1>
         <textarea value={tweet.description} onChange={handleDesChange} cols="50" rows="5"></textarea>
@@ -57,6 +87,7 @@ const Tweets  = () => {
             {categories.map((item, ind) => <option key={ind} value={item}>{item}</option>)}
         </select>
         <br/>
+        <input multiple type="file" onChange={handleFileChange} />
         <br/>
         <button onClick={createTweet}>Tweet</button>
         <br/>
