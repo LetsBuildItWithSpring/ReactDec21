@@ -5,3 +5,7 @@
     color: #FFF;
     
 }
+
+.crsl-img {
+    object-fit: cover;
+}
