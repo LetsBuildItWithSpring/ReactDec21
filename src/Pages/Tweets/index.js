@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 // import { use} from ''
 import { Form, Row, Col, InputGroup, Button, FormControl, FormGroup, Alert } from 'react-bootstrap'
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import store from '../../state';
+import Notifier from '../../widgets/Notifier';
 import * as fx from './../../fx';
 import { readFile } from './../../utils';
 
@@ -15,7 +17,7 @@ const Tweets = () => {
         images: [],
     });
     const [category, setCategory] = useState('');
-    const [selectedCat, setSelectedCat] = useState('');
+    const [selectedCat, setSelectedCat] = useState('sci-fi');
     const [newFiles, setNewFiles] = useState([]);
     const { loading, failure, success } = useSelector(state => state.httpReq);
     const handleDesChange = ({ currentTarget: { value } }) => {
@@ -48,7 +50,7 @@ const Tweets = () => {
     }
 
     const createCategory = () => {
-        
+
         store.dispatch(fx.newCategory(category));
     }
     useEffect(() => {
@@ -60,13 +62,13 @@ const Tweets = () => {
     }, [])
 
     useEffect(() => {
-            if(success || failure){
-                setTimeout(() => {
-                    store.dispatch({
-                        type: 'RESET'
-                    })
-                }, 2500)
-            }
+        if (success || failure) {
+            setTimeout(() => {
+                store.dispatch({
+                    type: 'RESET'
+                })
+            }, 250000)
+        }
     }, [success, failure]);
 
     const handleFileChange = async (event) => {
@@ -105,7 +107,7 @@ const Tweets = () => {
                     </InputGroup>
                     <Form.Group className="mb-3">
                         <Form.Label>Select Category</Form.Label>
-                        <Form.Select onChange={({ currentTarget: { value } }) => setSelectedCat(value)}>
+                        <Form.Select value={selectedCat} onChange={({ currentTarget: { value } }) => setSelectedCat(value)}>
                             {categories.map((item, ind) => <option key={ind} value={item.name}>{item.name}</option>)}
                         </Form.Select>
                     </Form.Group>
@@ -146,28 +148,29 @@ const Tweets = () => {
             </Col>
         </Row>
         {
-            loading && <Alert key={123} variant="secondary">
-                Creating tweet. Please wait.
-                
-                like.
-            </Alert>
+            loading && <Notifier variant="secondary">
+                <p>Creating Tweet. Please Wait....</p>
+            </Notifier>
         }
         {
-            success && <Alert key={123} variant="success">
-                Creating tweet. Is done.
-                
-                like.
-            </Alert>
+            success && <Notifier variant="success">
+                <p> Creating tweet. Is done.</p>
+            </Notifier>
         }
         {
-            failure && <Alert key={123} variant="danger">
-                Creating tweet. Failed. Try again
-                
-                like.
-            </Alert>
+            true && <Notifier variant="danger">
+                <p>Unable to create tweet. Try Again</p>
+            </Notifier>
         }
     </main>
 }
 
 export default Tweets;
 
+// accessbility 
+// code-splitting 
+// errorboundaries 
+// forwarding refs 
+// higher order components 
+// refs and doms 
+// render props

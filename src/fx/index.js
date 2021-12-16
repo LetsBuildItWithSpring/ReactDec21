@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import * as http from './../http';
 
 
@@ -50,8 +51,15 @@ export const newCategory = (category) => {
 
 export const getData = () => {
     return (store) => {
-        const cats = sessionStorage.getItem('categories');
-        const tweets = sessionStorage.getItem('tweets');
+        let cats = '';
+        let tweets = '';
+        try{
+             cats = sessionStorage.getItem('categories');
+             tweets = sessionStorage.getItem('tweets');
+           
+        }catch(err){
+            console.log(err);
+        }
         if (cats) {
             const data = JSON.parse(cats);
             store.dispatch({
