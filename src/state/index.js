@@ -1,5 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import uid2 from 'uid2';
+import { userReducer } from './user.reducer';
 //bastohomle@yevme.com
 //DontShare
 
@@ -32,6 +33,12 @@ function tweetsReducer(state = [], action) {
         })
     }
     if (type === 'PUT_TWEETS') {
+        let tempData;
+        if(data === undefined || data === null){
+            tempData = [];
+        }else{
+            tempData = data;
+        }
         state = [...data]
     }
     return state;
@@ -81,6 +88,7 @@ const rootReducer = combineReducers({
     tweets: tweetsReducer,
     categories: categoryReducer,
     httpReq: requestReducer,
+    user: userReducer,
 });
 
 const customMiddleware = (store) => {

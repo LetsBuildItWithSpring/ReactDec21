@@ -37,6 +37,26 @@ export const getCats = async () => {
         console.log("GET_CATS",res);
         return res.data;
     }catch(err){
+        console.log("GET_CATS_ERR",);
+
+        console.log(err);
+    }
+}
+
+export const createUser = async (user) => {
+    try{
+        const {data} = await axios.post(`${BASE_URL}/user/new`, user);
+        return data;
+    }catch(err){
+        console.log(err);
+    }
+}
+export const logUserIn = async (user) => {
+    try{
+        const {data} = await axios.post(`${BASE_URL}/user/login`, user);
+        console.log("DATA", data);
+        return data;
+    }catch(err){
         console.log(err);
     }
 }

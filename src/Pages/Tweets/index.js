@@ -158,7 +158,7 @@ const Tweets = () => {
             </Notifier>
         }
         {
-            true && <Notifier variant="danger">
+            failure && <Notifier variant="danger">
                 <p>Unable to create tweet. Try Again</p>
             </Notifier>
         }

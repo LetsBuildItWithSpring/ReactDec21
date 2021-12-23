@@ -94,3 +94,51 @@ export const getData = () => {
         }
     }
 }
+
+export const newUser = (user) => {
+    return async (store) => {
+        const {result} = await http.createUser(user);
+        console.log(result);
+        if(result._id){
+            store.dispatch({
+                type: "SUCCESS"
+            });
+        } else{
+            store.dispatch({
+                type: "FAILURE"
+            });
+        }
+    }
+}
+
+export const signUserIn = (user) => {
+    return async (store) => {
+        const {token} = await http.logUserIn(user);
+        console.log("token log in fx", token);
+        // const token = data.token;
+        if(token){
+            sessionStorage.setItem("user_token", token);
+            store.dispatch({
+                type: 'SUCCESS'
+            });
+            store.dispatch({
+                type: 'SET_TOKEN',
+                data: token
+            });
+        } else {
+            store.dispatch({
+                type: 'FAILURE'
+            });
+        }
+    }
+}
+
+export const logout = () => {
+ return  (store) => {
+            sessionStorage.removeItem('user_token');
+            store.dispatch({
+                type: 'SET_TOKEN',
+                data:'',
+            });
+    }
+}
